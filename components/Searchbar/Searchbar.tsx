@@ -4,7 +4,6 @@ import SearchIcon from 'assets/icons/SearchIcon'
 import { SearchbarSuggestions } from './SearchbarSuggestions'
 import { ErrorMessage } from 'components/ErrorMessage'
 
-import { subcategoryArray } from '../../types'
 import { SearchbarAction } from './SearchbarReducer'
 import { useRouter } from 'next/router'
 
@@ -15,7 +14,6 @@ interface SearchbarProps {
   searchQueryIsValid: boolean
 }
 
-const searchOptions = subcategoryArray
 const SEARCH_ERROR_MSG = 'Please enter a valid search query'
 
 export const Searchbar: React.FC<SearchbarProps> = ({
@@ -26,22 +24,11 @@ export const Searchbar: React.FC<SearchbarProps> = ({
 }) => {
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
-  const suggestions = getFilteredSuggestions(searchQuery)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchSearch({
       type: 'search_query_change',
       searchQuery: e.target.value,
-    })
-  }
-
-  const handleSuggestionClick = (searchQuery: string) => {
-    dispatchSearch({ type: 'suggestion_click', searchQuery })
-    router.push({
-      pathname: '/search',
-      query: {
-        query: searchQuery,
-      },
     })
   }
 
@@ -99,31 +86,15 @@ export const Searchbar: React.FC<SearchbarProps> = ({
             <SearchIcon className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
-        {suggestions.length > 0 && showSuggestions && (
-          <SearchbarSuggestions
-            suggestions={suggestions}
-            onSuggestionClick={handleSuggestionClick}
-          />
-        )}
+        <SearchbarSuggestions
+          searchQuery={searchQuery}
+          dispatchSearch={dispatchSearch}
+          showSuggestions={showSuggestions}
+        />
       </div>
       {!searchQueryIsValid && <ErrorMessage>{SEARCH_ERROR_MSG}</ErrorMessage>}
     </form>
   )
 }
 
-const getFilteredSuggestions = (query: string) => {
-  const normalisedQuery = query.trim().toLowerCase()
-  if (normalisedQuery.length === 0) {
-    return []
-  }
 
-  const suggestions = new Set<string>([])
-  searchOptions.forEach((option) => {
-    const normalisedOption = option.toLowerCase()
-    if (normalisedOption.includes(normalisedQuery)) {
-      suggestions.add(normalisedOption)
-    }
-  })
-
-  return Array.from(suggestions)
-}
