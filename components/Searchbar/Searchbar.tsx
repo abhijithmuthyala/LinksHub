@@ -1,7 +1,6 @@
 import { useRef, useEffect } from 'react'
 
 import SearchIcon from 'assets/icons/SearchIcon'
-import { SearchbarSuggestions } from './SearchbarSuggestions'
 import { ErrorMessage } from 'components/ErrorMessage'
 
 import { SearchbarAction } from './SearchbarReducer'
@@ -11,7 +10,8 @@ interface SearchbarProps {
   dispatchSearch: (action: SearchbarAction) => void
   searchQuery: string
   showSuggestions: boolean
-  searchQueryIsValid: boolean
+  searchQueryIsValid: boolean,
+  children?: React.ReactNode
 }
 
 const SEARCH_ERROR_MSG = 'Please enter a valid search query'
@@ -19,8 +19,8 @@ const SEARCH_ERROR_MSG = 'Please enter a valid search query'
 export const Searchbar: React.FC<SearchbarProps> = ({
   dispatchSearch,
   searchQuery,
-  showSuggestions,
   searchQueryIsValid,
+  children
 }) => {
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
@@ -86,11 +86,7 @@ export const Searchbar: React.FC<SearchbarProps> = ({
             <SearchIcon className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
-        <SearchbarSuggestions
-          searchQuery={searchQuery}
-          dispatchSearch={dispatchSearch}
-          showSuggestions={showSuggestions}
-        />
+        {children}
       </div>
       {!searchQueryIsValid && <ErrorMessage>{SEARCH_ERROR_MSG}</ErrorMessage>}
     </form>

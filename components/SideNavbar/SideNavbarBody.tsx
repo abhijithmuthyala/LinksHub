@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes'
 import { SideNavbarCategoryList } from './SideNavbarCategoryList'
 
 import { useSearchReducer } from 'hooks/useSearchReducer'
+import { SearchbarSuggestions } from 'components/Searchbar/SearchbarSuggestions'
 
 const MemoizedSideNavbarCategoryList = memo(SideNavbarCategoryList)
 
@@ -21,7 +22,13 @@ export const SideNavbarBody: FC = () => {
       )}
     >
       <div className="bg-primary-light transiton-all w-full p-4 transition-none ease-in dark:bg-dark">
-        <Searchbar {...searchState} dispatchSearch={dispatchSearch} />
+        <Searchbar {...searchState} dispatchSearch={dispatchSearch}>
+          <SearchbarSuggestions
+            searchQuery={searchState.searchQuery}
+            dispatchSearch={dispatchSearch}
+            showSuggestions={searchState.showSuggestions}
+          />
+        </Searchbar>
       </div>
       <MemoizedSideNavbarCategoryList query={searchState.categoryQuery} />
     </div>
