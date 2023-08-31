@@ -10,7 +10,8 @@ interface SearchbarProps {
   dispatchSearch: (action: SearchbarAction) => void
   searchQuery: string
   showSuggestions: boolean
-  searchQueryIsValid: boolean,
+  searchQueryIsValid: boolean
+  queueSetDebouncedSearchQuery: (searchQuery: string) => void
   children?: React.ReactNode
 }
 
@@ -20,16 +21,20 @@ export const Searchbar: React.FC<SearchbarProps> = ({
   dispatchSearch,
   searchQuery,
   searchQueryIsValid,
-  children
+  queueSetDebouncedSearchQuery,
+  children,
 }) => {
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchQuery = e.target.value
+
     dispatchSearch({
       type: 'search_query_change',
-      searchQuery: e.target.value,
+      searchQuery,
     })
+    queueSetDebouncedSearchQuery(searchQuery)
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,5 +97,3 @@ export const Searchbar: React.FC<SearchbarProps> = ({
     </form>
   )
 }
-
-

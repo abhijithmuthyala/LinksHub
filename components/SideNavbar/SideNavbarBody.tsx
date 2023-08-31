@@ -4,15 +4,22 @@ import classNames from 'classnames'
 import { useTheme } from 'next-themes'
 
 import { SideNavbarCategoryList } from './SideNavbarCategoryList'
+import { SearchbarSuggestions } from '../Searchbar/SearchbarSuggestions'
 
 import { useSearchReducer } from 'hooks/useSearchReducer'
-import { SearchbarSuggestions } from 'components/Searchbar/SearchbarSuggestions'
+import { useDebounce } from 'hooks/useDebounce'
 
 const MemoizedSideNavbarCategoryList = memo(SideNavbarCategoryList)
+const MemoizedSearchbarSuggestions = memo(SearchbarSuggestions)
+const SUGGESTIONS_DEBOUNCE_THRESHOLD = 300
 
 export const SideNavbarBody: FC = () => {
   const { theme } = useTheme()
   const [searchState, dispatchSearch] = useSearchReducer()
+  const [debouncedSearchQuery, queueSetDebouncedSearchQuery] = useDebounce(
+    searchState.searchQuery,
+    SUGGESTIONS_DEBOUNCE_THRESHOLD
+  )
 
   return (
     <div
@@ -22,9 +29,13 @@ export const SideNavbarBody: FC = () => {
       )}
     >
       <div className="bg-primary-light transiton-all w-full p-4 transition-none ease-in dark:bg-dark">
-        <Searchbar {...searchState} dispatchSearch={dispatchSearch}>
-          <SearchbarSuggestions
-            searchQuery={searchState.searchQuery}
+        <Searchbar
+          {...searchState}
+          dispatchSearch={dispatchSearch}
+          queueSetDebouncedSearchQuery={queueSetDebouncedSearchQuery}
+        >
+          <MemoizedSearchbarSuggestions
+            searchQuery={debouncedSearchQuery}
             dispatchSearch={dispatchSearch}
             showSuggestions={searchState.showSuggestions}
           />
