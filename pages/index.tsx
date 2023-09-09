@@ -75,13 +75,13 @@ export default function Home() {
 
         <link rel="icon" href="/icon.png" className="rounded-full" />
       </Head>
-      <section className="flex min-h-[calc(100%-68px)] flex-col">
+      <section className="flex min-h-[calc(100%-68px)] flex-col lg:grid">
         <div className=" m-auto flex flex-col  items-start gap-2">
-          <div className="m-auto md:text-7xl text-5xl gap-2 flex items-center justify-center">
+          <div className="m-auto flex items-center justify-center gap-2 text-5xl md:text-7xl">
             <Logo />
             <span>👾</span>
           </div>
-          <div className="flex flex-col mt-6 justify-center items-start w-96 max-md:w-64">
+          <div className="mt-6 flex w-96 flex-col items-start justify-center max-md:w-64">
             <p className="text-md">
               {' '}
               LinksHub aims to provide developers with access to a wide range of
